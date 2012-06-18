@@ -1,2 +1,2 @@
 rootProject.name = 'simpleblobstoreparent'
-include ':blobstore-api', ':blobstore-gae'
+include ':blobstore-api', ':blobstore-gae', ':blobstore-j2ee'

@@ -10,11 +10,11 @@ import javax.inject.Inject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class GaeBlobServiceTest {
+public class J2eeBlobServiceTest {
 
     public static final int DATA_LEN = 100000;
     @Rule
-    public GuiceBerryRule guiceBerry = new GuiceBerryRule(GaeGuiceBerryEnv.class);
+    public GuiceBerryRule guiceBerry = new GuiceBerryRule(J2eeGuiceBerryEnv.class);
 
 
     @Inject

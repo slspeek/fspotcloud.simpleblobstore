@@ -21,8 +21,8 @@ derby.log
 */hibernate.log
 grapher/src/site/resources/*.png
 extras/*
-*/MODELJPA/*
-MODELJPA/*
+*/BLOBSTORE/*
+BLOBSTORE/*
 test-output/*
 runtime/*
 target/*
