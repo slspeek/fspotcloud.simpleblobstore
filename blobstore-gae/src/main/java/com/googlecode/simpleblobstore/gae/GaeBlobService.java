@@ -1,0 +1,76 @@
+package com.googlecode.simpleblobstore.gae;
+
+
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.files.AppEngineFile;
+import com.google.appengine.api.files.FileService;
+import com.google.appengine.api.files.FileWriteChannel;
+import com.googlecode.simpleblobstore.BlobInfo;
+import com.googlecode.simpleblobstore.BlobKey;
+import com.googlecode.simpleblobstore.BlobService;
+
+import javax.inject.Inject;
+import java.nio.ByteBuffer;
+
+public class GaeBlobService implements BlobService {
+
+    @Inject
+    BlobstoreService gaeBlobService;
+    @Inject
+    BlobInfoFactory infoFactory;
+    @Inject
+    FileService fileService;
+
+    @Override
+    public void delete(BlobKey blobKey) {
+        com.google.appengine.api.blobstore.BlobKey appengineKey = getGaeBlobKey(blobKey);
+        gaeBlobService.delete(appengineKey);
+    }
+
+    private com.google.appengine.api.blobstore.BlobKey getGaeBlobKey(BlobKey key) {
+        return new com.google.appengine.api.blobstore.BlobKey(key.getKeyString());
+    }
+
+    @Override
+    public BlobKey save(String mimeType, byte[] data) {
+
+        try {
+            AppEngineFile file = fileService.createNewBlobFile(mimeType);
+            // Open a channel to write to it
+            boolean lock = true;
+            FileWriteChannel writeChannel = fileService.openWriteChannel(file, lock);
+            ByteBuffer buf = ByteBuffer.wrap(data);
+            writeChannel.write(buf);
+            writeChannel.closeFinally();
+
+            com.google.appengine.api.blobstore.BlobKey blobKey = fileService.getBlobKey(file);
+            return new BlobKey(blobKey.getKeyString());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public BlobInfo getInfo(BlobKey key) {
+        com.google.appengine.api.blobstore.BlobInfo gaeInfo = infoFactory.loadBlobInfo(getGaeBlobKey(key));
+        if (gaeInfo != null) {
+            BlobInfo info = new BlobInfo(gaeInfo.getContentType(), gaeInfo.getSize());
+            return info;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public byte[] fetchData(BlobKey key) {
+        BlobInfo info = getInfo(key);
+        if (info != null) {
+            long length = info.getLength();
+            byte[] result = gaeBlobService.fetchData(getGaeBlobKey(key), 0, length);
+            return result;
+        } else {
+            return null;
+        }
+    }
+}

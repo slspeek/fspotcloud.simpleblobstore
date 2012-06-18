@@ -1,0 +1,106 @@
+apply from: 'libraries.gradle'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        add(new org.apache.ivy.plugins.resolver.URLResolver()) {
+            name = 'GitHub'
+            addArtifactPattern 'http://cloud.github.com/downloads/[organisation]/[module]/[module]-[revision].[ext]'
+        }
+        maven {
+            url "http://fspotcloud-maven.googlecode.com/svn/maven/repository"
+
+        }
+    }
+
+    dependencies {
+        classpath 'bmuschko:gradle-gae-plugin:0.5.4'
+        classpath 'bmuschko:gradle-tomcat-plugin:0.9.1'
+    }
+}
+
+allprojects {
+    apply plugin: 'maven'
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+
+    defaultTasks 'build'
+    group = 'com.googlecode.simpleblobstore'
+    version = '0.1-sbs'
+
+
+}
+
+subprojects {
+    configurations {
+        jalopy
+    }
+    apply plugin: 'java'
+    apply plugin: 'jdepend'
+
+
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+    //ext.libs = libs
+
+    dependencies {
+        jalopy 'jalopy:jalopy-ant:0.1-1.5b5', 'jalopy:jalopy:1.5rc3'
+    }
+
+    task jalopy(dependsOn: classes) << {
+
+        ant.taskdef(name: 'jalopy',
+                classname: 'de.hunsicker.jalopy.plugin.ant.AntPlugin',
+                classpath: configurations.jalopy.asPath)
+        if (file("src/main/java").isDirectory()) {
+            ant.jalopy(convention: "${rootDir}/config/jalopy/jalopy-convention.xml") {
+                fileset(dir: "src/main/java") {
+                    include(name: '**/*.java')
+                }
+            }
+        }
+        if (file("src/test/java").isDirectory()) {
+            ant.jalopy(convention: "${rootDir}/config/jalopy/jalopy-convention.xml") {
+                fileset(dir: "src/test/java") {
+                    include(name: '**/*.java')
+                }
+
+            }
+        }
+    }
+
+    repositories {
+        mavenCentral()
+        maven {
+            url "http://fspotcloud-maven.googlecode.com/svn/maven/repository"
+        }
+        maven {
+            url "http://www.datanucleus.org/downloads/maven2"
+        }
+        mavenLocal()
+    }
+}
+
+task javadoc(type: Javadoc) {
+    source subprojects.collect {project ->
+        project.sourceSets.main.allJava
+    }
+    destinationDir = new File(buildDir, 'javadoc')
+    // Might need a classpath
+    classpath = files(subprojects.collect {project ->
+        project.sourceSets.main.compileClasspath
+    })
+}
+
+
+project(':blobstore-gae') {
+    dependencies {
+        compile project(':blobstore-api')
+        compile libs.appengine_api
+        compile libs.inject, libs.guice, libs.guava
+
+        testCompile libs.gae_testing
+        testCompile libs.junit, libs.guiceberry, libs.guava_testlib, libs.servlet_spec
+    }
+
+}
