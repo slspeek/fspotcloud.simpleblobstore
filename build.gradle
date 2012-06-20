@@ -28,7 +28,33 @@ allprojects {
     group = 'com.googlecode.simpleblobstore'
     version = '0.1-sbs'
 
+    configurations {
+        deployerJars
+    }
 
+    dependencies {
+        deployerJars "org.apache.maven.wagon:wagon-webdav:1.0-beta-2"
+        //"org.apache.maven.wagon:wagon-webdav-jackrabbit:1.0-beta-6",
+    }
+    uploadArchives {
+        repositories.mavenDeployer {
+            configuration = configurations.deployerJars
+            repository(url: "dav:https://fspotcloud-maven.googlecode.com/svn/maven/repository") {
+                authentication(userName: "slspeek", password: "")
+            }
+        }
+    }
+
+    repositories {
+        mavenCentral()
+        maven {
+            url "http://fspotcloud-maven.googlecode.com/svn/maven/repository"
+        }
+        maven {
+            url "http://www.datanucleus.org/downloads/maven2"
+        }
+        mavenLocal()
+    }
 }
 
 subprojects {
@@ -69,16 +95,7 @@ subprojects {
         }
     }
 
-    repositories {
-        mavenCentral()
-        maven {
-            url "http://fspotcloud-maven.googlecode.com/svn/maven/repository"
-        }
-        maven {
-            url "http://www.datanucleus.org/downloads/maven2"
-        }
-        mavenLocal()
-    }
+
 }
 
 task javadoc(type: Javadoc) {
