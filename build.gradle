@@ -26,7 +26,7 @@ allprojects {
 
     defaultTasks 'build'
     group = 'com.googlecode.simpleblobstore'
-    version = '0.1-sbs'
+    version = '0.11-sbs'
 
     configurations {
         deployerJars

@@ -12,7 +12,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class GaeBlobServiceTest {
 
-    public static final int DATA_LEN = 100000;
+    public static final int DATA_LEN = 2000200; //2M
     @Rule
     public GuiceBerryRule guiceBerry = new GuiceBerryRule(GaeGuiceBerryEnv.class);
 
