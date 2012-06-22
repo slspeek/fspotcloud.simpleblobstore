@@ -1,4 +1,4 @@
-package com.googlecode.simpleblobstore;
+package com.googlecode.simpleblobstore.j2ee;
 
 import com.googlecode.simplejpadao.SimpleDAOGenIdImpl;
 

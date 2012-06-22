@@ -1,4 +1,8 @@
-package com.googlecode.simpleblobstore;
+package com.googlecode.simpleblobstore.j2ee;
+
+import com.googlecode.simpleblobstore.BlobInfo;
+import com.googlecode.simpleblobstore.BlobKey;
+import com.googlecode.simpleblobstore.BlobService;
 
 import javax.inject.Inject;
 

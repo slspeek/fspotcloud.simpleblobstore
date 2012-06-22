@@ -1,4 +1,4 @@
-package com.googlecode.simpleblobstore;
+package com.googlecode.simpleblobstore.gae;
 /*
  * Copyright 2010-2012 Steven L. Speek.
  * This program is free software; you can redistribute it and/or

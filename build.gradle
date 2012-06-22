@@ -26,7 +26,7 @@ allprojects {
 
     defaultTasks 'build'
     group = 'com.googlecode.simpleblobstore'
-    version = '0.11-sbs'
+    version = '0.12-sbs'
 
     configurations {
         deployerJars
@@ -108,7 +108,27 @@ task javadoc(type: Javadoc) {
         project.sourceSets.main.compileClasspath
     })
 }
+project(':blobstore-api') {
 
+    dependencies {
+        testCompile libs.inject,
+                libs.junit,
+                libs.guiceberry, libs.guava_testlib, libs.servlet_spec, libs.guice
+    }
+
+    task packageTests(type: Jar, dependsOn: compileTestJava) {
+        from sourceSets.test.output.classesDir
+        classifier = 'tests'
+    }
+
+    test {
+        exclude '*'
+    }
+
+    artifacts {
+        testCompile packageTests
+    }
+}
 
 project(':blobstore-gae') {
     dependencies {
@@ -118,6 +138,19 @@ project(':blobstore-gae') {
 
         testCompile libs.gae_testing
         testCompile libs.junit, libs.guiceberry, libs.guava_testlib, libs.servlet_spec
+    }
+
+    task unpackTest(dependsOn: ':blobstore-api:packageTests') << {
+        myTests = file("../blobstore-api/build/libs/blobstore-api-${version}-tests.jar")
+        ant.unjar(dest: "$buildDir/classes/test", src: myTests)
+    }
+
+    test.dependsOn unpackTest
+
+    test {
+        systemProperties['GuiceBerryEnvSelectorOverride_com.googlecode.simpleblobstore.PlaceHolderGuiceBerryEnv'] =
+            'com.googlecode.simpleblobstore.gae.GaeGuiceBerryEnv'
+        testLogging.showStandardStreams = true
     }
 
 }
@@ -132,4 +165,16 @@ project(':blobstore-j2ee') {
         testCompile libs.junit, libs.guiceberry, libs.guava_testlib
     }
 
+    task unpackTest(dependsOn: ':blobstore-api:packageTests') << {
+        myTests = file("../blobstore-api/build/libs/blobstore-api-${version}-tests.jar")
+        ant.unjar(dest: "$buildDir/classes/test", src: myTests)
+    }
+
+    test.dependsOn unpackTest
+
+    test {
+        systemProperties['GuiceBerryEnvSelectorOverride_com.googlecode.simpleblobstore.PlaceHolderGuiceBerryEnv'] =
+            'com.googlecode.simpleblobstore.j2ee.J2eeGuiceBerryEnv'
+        testLogging.showStandardStreams = true
+    }
 }

@@ -1,6 +1,7 @@
-package com.googlecode.simpleblobstore;
+package com.googlecode.simpleblobstore.j2ee;
 
 import com.google.inject.AbstractModule;
+import com.googlecode.simpleblobstore.BlobService;
 
 public class J2eeSimpleBlobstoreModule extends AbstractModule {
 

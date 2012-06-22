@@ -1,8 +1,7 @@
-package com.googlecode.simpleblobstore;
+package com.googlecode.simpleblobstore.gae;
 
 import com.google.guiceberry.GuiceBerryModule;
 import com.google.guiceberry.TestWrapper;
-import com.googlecode.simpleblobstore.gae.GaeSimpleBlobstoreModule;
 
 public class GaeGuiceBerryEnv extends GuiceBerryModule {
 
