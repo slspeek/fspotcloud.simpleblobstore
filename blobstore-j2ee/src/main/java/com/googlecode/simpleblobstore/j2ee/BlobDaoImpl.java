@@ -7,8 +7,9 @@ import javax.inject.Provider;
 import javax.persistence.EntityManager;
 
 public class BlobDaoImpl extends SimpleDAOGenIdImpl<Blob, BlobEntity, Long> implements BlobDao {
-    @Inject
-    public BlobDaoImpl(Provider<EntityManager> emProvider) {
-        super(BlobEntity.class, emProvider);
+
+    @Override
+    public Class<BlobEntity> getEntityType() {
+        return BlobEntity.class;
     }
 }

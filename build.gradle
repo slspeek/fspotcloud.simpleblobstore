@@ -26,7 +26,7 @@ allprojects {
 
     defaultTasks 'build'
     group = 'com.googlecode.simpleblobstore'
-    version = '0.12-sbs'
+    version = '0.13-sbs'
 
     configurations {
         deployerJars
@@ -40,7 +40,7 @@ allprojects {
         repositories.mavenDeployer {
             configuration = configurations.deployerJars
             repository(url: "dav:https://fspotcloud-maven.googlecode.com/svn/maven/repository") {
-                authentication(userName: "slspeek", password: "")
+                authentication(userName: "slspeek", password: password)
             }
         }
     }
