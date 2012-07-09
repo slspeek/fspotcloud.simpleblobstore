@@ -46,12 +46,13 @@ allprojects {
     }
 
     repositories {
-        mavenCentral()
         maven {
-            url "http://fspotcloud-maven.googlecode.com/svn/maven/repository"
-        }
-        maven {
-            url "http://www.datanucleus.org/downloads/maven2"
+            url maven_repo
+            artifactUrls "http://fspotcloud-maven.googlecode.com/svn/maven/repository",
+                    "http://maven.fspotcloud.googlecode.com/hg/repo",
+                    "http://maven-gae-plugin.googlecode.com/svn/repository",
+                    "http://gwt-maven.googlecode.com/svn/trunk/mavenrepo/",
+                    "http://www.datanucleus.org/downloads/maven2"
         }
         mavenLocal()
     }
