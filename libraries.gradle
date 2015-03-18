@@ -1,4 +1,4 @@
-libs = [
+ext.libs = [
         inject: "javax.inject:javax.inject:1",
         junit: "junit:junit:4.10",
         guice: "com.google.inject:guice:${guice_version}",
