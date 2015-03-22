@@ -18,7 +18,7 @@ allprojects {
 
     defaultTasks 'build'
     group = 'com.googlecode.simpleblobstore'
-    version = '0.14-sbs'
+    version = '0.15-sbs'
 
     configurations {
         deployerJars
@@ -124,26 +124,26 @@ project(':blobstore-api') {
 }
 
 project(':blobstore-gae') {
-    dependencies {
-        compile project(':blobstore-api')
-        compile libs.appengine_api
-        compile libs.inject, libs.guice, libs.guava
+		dependencies {
+				compile project(':blobstore-api')
+				compile libs.appengine_api
+				compile libs.inject, libs.guice, libs.guava
 
-        testCompile libs.gae_testing
-        testCompile libs.junit, libs.guiceberry, libs.guava_testlib, libs.servlet_spec
-    }
+				testCompile libs.gae_testing
+				testCompile libs.junit, libs.guiceberry, libs.guava_testlib, libs.servlet_spec
+		}
 
-    task unpackTest(dependsOn: ':blobstore-api:packageTests') << {
-        ant.unjar(dest: "$buildDir/classes/test", src: file("../blobstore-api/build/libs/blobstore-api-${version}-tests.jar"))
-    }
+		task unpackTest(dependsOn: ':blobstore-api:packageTests') << {
+				ant.unjar(dest: "$buildDir/classes/test", src: file("../blobstore-api/build/libs/blobstore-api-${version}-tests.jar"))
+		}
 
-    test.dependsOn unpackTest
+		test.dependsOn unpackTest
 
-    test {
-        systemProperties['GuiceBerryEnvSelectorOverride_com.googlecode.simpleblobstore.PlaceHolderGuiceBerryEnv'] =
-            'com.googlecode.simpleblobstore.gae.GaeGuiceBerryEnv'
-        testLogging.showStandardStreams = true
-    }
+		test {
+				systemProperties['GuiceBerryEnvSelectorOverride_com.googlecode.simpleblobstore.PlaceHolderGuiceBerryEnv'] =
+						'com.googlecode.simpleblobstore.gae.GaeGuiceBerryEnv'
+				testLogging.showStandardStreams = true
+		}
 
 }
 
