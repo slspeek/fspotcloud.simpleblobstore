@@ -15,6 +15,8 @@ ext.libs = [
                 "javassist:javassist:3.12.0.GA",
                 // "org.hibernate:hibernate-validator-annotation-processor:4.1.0.Final",
                 "org.hibernate:hibernate-entitymanager:${hibernate_version}"],
+        httpclient: ["org.apache.httpcomponents:httpclient:4.5","org.apache.httpcomponents:httpcore:4.4.1",
+        "org.apache.httpcomponents:httpmime:4.5"],
         servlet_spec: dependencies.create("org.apache.geronimo.specs:geronimo-servlet_2.5_spec:1.2") {
             transitive = false
         },

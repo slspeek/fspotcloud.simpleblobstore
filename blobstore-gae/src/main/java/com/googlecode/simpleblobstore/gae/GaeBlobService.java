@@ -11,9 +11,13 @@ import com.googlecode.simpleblobstore.BlobKey;
 import com.googlecode.simpleblobstore.BlobService;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.Map;
 
 public class GaeBlobService implements BlobService {
 
@@ -89,4 +93,19 @@ public class GaeBlobService implements BlobService {
             return null;
         }
     }
+
+	@Override
+	public Map<String, List<BlobKey>> getUploads(HttpServletRequest request) {
+		Map<String, List<BlobKey>> gaeResult = gaeBlobService.getUplouds(request);
+		Map<String, List<BlobKey>> result = Maps.newHa
+		for (String key: gaeResult.keys()) {
+			
+		}
+		return null;
+	}
+
+	@Override
+	public String createUploadUrl(String successUrl) {
+		return gaeBlobService.createUploadUrl(successUrl);
+	}
 }

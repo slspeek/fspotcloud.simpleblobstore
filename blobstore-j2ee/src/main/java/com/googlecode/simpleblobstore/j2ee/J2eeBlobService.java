@@ -1,10 +1,14 @@
 package com.googlecode.simpleblobstore.j2ee;
 
+import java.util.List;
+import java.util.Map;
+
 import com.googlecode.simpleblobstore.BlobInfo;
 import com.googlecode.simpleblobstore.BlobKey;
 import com.googlecode.simpleblobstore.BlobService;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 public class J2eeBlobService implements BlobService {
 
@@ -46,4 +50,16 @@ public class J2eeBlobService implements BlobService {
         }
         return data;
     }
+
+	@Override
+	public Map<String, List<BlobKey>> getUploads(HttpServletRequest request) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String createUploadUrl(String successUrl) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -9,6 +9,6 @@ public class GaeGuiceBerryEnv extends GuiceBerryModule {
     protected void configure() {
         super.configure();
         install(new GaeSimpleBlobstoreModule());
-        bind(TestWrapper.class).to(GaeLocalDatastoreHelperTestWrapper.class);
+        bind(TestWrapper.class).to(GaeLocalBlobstoreHelperTestWrapper.class);
     }
 }

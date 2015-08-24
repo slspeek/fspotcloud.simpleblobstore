@@ -26,7 +26,7 @@ import com.google.guiceberry.TestWrapper;
 import javax.inject.Inject;
 
 
-public class GaeLocalDatastoreHelperTestWrapper implements TestWrapper {
+public class GaeLocalBlobstoreHelperTestWrapper implements TestWrapper {
     private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig(),
             new LocalBlobstoreServiceTestConfig());
     @Inject

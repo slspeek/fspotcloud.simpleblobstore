@@ -16,9 +16,9 @@ allprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
 
-    defaultTasks 'build'
+	defaultTasks 'build'
     group = 'com.googlecode.simpleblobstore'
-    version = '0.15-sbs'
+    version = '0.2-alpha'
 
     configurations {
         deployerJars
@@ -104,9 +104,13 @@ task javadoc(type: Javadoc) {
 project(':blobstore-api') {
 
     dependencies {
+    
+    	compile  libs.servlet_spec
         testCompile libs.inject,
                 libs.junit,
-                libs.guiceberry, libs.guava_testlib, libs.servlet_spec, libs.guice
+                libs.guiceberry,
+                libs.guava_testlib,
+                libs.guice, libs.httpclient
     }
 
     task packageTests(type: Jar, dependsOn: compileTestJava) {
@@ -130,7 +134,7 @@ project(':blobstore-gae') {
 				compile libs.inject, libs.guice, libs.guava
 
 				testCompile libs.gae_testing
-				testCompile libs.junit, libs.guiceberry, libs.guava_testlib, libs.servlet_spec
+				testCompile libs.junit, libs.guiceberry, libs.guava_testlib, libs.servlet_spec, libs.httpclient
 		}
 
 		task unpackTest(dependsOn: ':blobstore-api:packageTests') << {
@@ -144,7 +148,6 @@ project(':blobstore-gae') {
 						'com.googlecode.simpleblobstore.gae.GaeGuiceBerryEnv'
 				testLogging.showStandardStreams = true
 		}
-
 }
 
 
