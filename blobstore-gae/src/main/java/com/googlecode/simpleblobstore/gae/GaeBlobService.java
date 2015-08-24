@@ -6,6 +6,8 @@ import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.files.AppEngineFile;
 import com.google.appengine.api.files.FileService;
 import com.google.appengine.api.files.FileWriteChannel;
+import com.google.appengine.repackaged.com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.googlecode.simpleblobstore.BlobInfo;
 import com.googlecode.simpleblobstore.BlobKey;
 import com.googlecode.simpleblobstore.BlobService;
@@ -39,6 +41,9 @@ public class GaeBlobService implements BlobService {
         return new com.google.appengine.api.blobstore.BlobKey(key.getKeyString());
     }
 
+    private BlobKey getBlobKey(com.google.appengine.api.blobstore.BlobKey key) {
+        return new BlobKey(key.getKeyString());
+    }
     @Override
     public BlobKey save(String mimeType, byte[] data) {
 
@@ -96,12 +101,17 @@ public class GaeBlobService implements BlobService {
 
 	@Override
 	public Map<String, List<BlobKey>> getUploads(HttpServletRequest request) {
-		Map<String, List<BlobKey>> gaeResult = gaeBlobService.getUplouds(request);
-		Map<String, List<BlobKey>> result = Maps.newHa
-		for (String key: gaeResult.keys()) {
+		Map<String, List<com.google.appengine.api.blobstore.BlobKey>> gaeResult = gaeBlobService.getUploads(request);
+		Map<String, List<BlobKey>> result = Maps.newHashMap();
+		for (String key: gaeResult.keySet()) {
+			List<BlobKey> blobs = Lists.newArrayList();
+			for (com.google.appengine.api.blobstore.BlobKey bk: gaeResult.get(key)) {
+				blobs.add(getBlobKey(bk));
+			}
+			result.put(key,blobs);
 			
 		}
-		return null;
+		return result;
 	}
 
 	@Override
