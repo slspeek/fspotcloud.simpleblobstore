@@ -27,6 +27,8 @@ ext.libs = [
                 "org.apache.derby:derbyclient:${derby_version}",
                 "org.apache.derby:derbynet:${derby_version}",
                 "org.apache.derby:derbytools:${derby_version}"],
+				selenium: ["org.seleniumhq.selenium:selenium-java:${selenium_java_version}",
+                        "org.seleniumhq.selenium:selenium-firefox-driver:${selenium_firefox_version}"],
         simple_jpa_dao_api: "com.googlecode.simple-jpa-dao:dao-api:${simple_jpa_dao_version}",
         simple_jpa_dao_impl: "com.googlecode.simple-jpa-dao:dao-impl:${simple_jpa_dao_version}",
         simple_jpa_dao_cached_dao: "com.googlecode.simple-jpa-dao:cached-dao:${simple_jpa_dao_version}",

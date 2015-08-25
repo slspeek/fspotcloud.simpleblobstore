@@ -1,0 +1,8 @@
+description = 'Test web-application'
+
+dependencies {
+    compile libs.inject
+    compile libs.guice
+    compile project(':blobstore-api')
+    compile libs.servlet_spec
+}

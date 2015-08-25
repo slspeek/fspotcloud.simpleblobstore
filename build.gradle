@@ -1,13 +1,16 @@
 apply from: 'libraries.gradle'
 
 buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            url "http://fspotcloud-maven.googlecode.com/svn/maven/repository"
+	repositories {
+		mavenCentral()
+			maven {
+				url "http://fspotcloud-maven.googlecode.com/svn/maven/repository"
 
-        }
-    }
+			}
+	}
+	dependencies {
+		classpath 'com.google.appengine:gradle-appengine-plugin:1.9.18'
+	}
 
 }
 

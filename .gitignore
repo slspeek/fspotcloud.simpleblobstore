@@ -30,6 +30,7 @@ target/*
 */bin/*
 *.orig
 .settings/*
+*/.settings/*
 server/.externalToolBuilders/*
 server/.settings/*
 peer/peer*.log*
