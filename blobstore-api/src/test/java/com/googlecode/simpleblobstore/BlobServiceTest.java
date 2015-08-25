@@ -50,7 +50,6 @@ public class BlobServiceTest {
 
 	@Test
 	public void testDelete() throws Exception {
-		Thread.sleep(10000);
 		BlobKey key = saveInBlobstore(data);
 		byte[] retrieved = null;
 
