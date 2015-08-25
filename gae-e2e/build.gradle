@@ -33,19 +33,12 @@ dependencies {
     functionalTestCompile libs.guice
 }
 
-task unpackTestApp(dependsOn: ':test-app:assemble') << {
-    def app = file("../test-app/build/libs/test-app-${version}.jar")
-    ant.unjar(dest: "$buildDir/exploded-war/", src: app)
-}
-
-
 task unpackTest(dependsOn: ":blobstore-api:packageTests") << {
     def myTests = file("../blobstore-api/build/libs/blobstore-api-${version}-tests.jar")
     ant.unjar(dest: "$buildDir/classes/functionalTest", src: myTests)
 }
 
-appengineRun.dependsOn unpackTestApp, unpackTest
-appengineFunctionalTest.dependsOn appengineRun
+appengineFunctionalTest.dependsOn unpackTest
 
 appengineFunctionalTest {
 	systemProperties['GuiceBerryEnvSelectorOverride_com.googlecode.simpleblobstore.PlaceHolderGuiceBerryEnv'] =
