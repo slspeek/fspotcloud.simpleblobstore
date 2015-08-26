@@ -58,7 +58,7 @@ subprojects {
         jalopy
     }
     apply plugin: 'java'
-    apply plugin: 'jdepend'
+    //apply plugin: 'jdepend'
 
 
     sourceCompatibility = 1.7

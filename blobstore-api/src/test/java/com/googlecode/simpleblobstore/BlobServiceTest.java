@@ -1,19 +1,12 @@
 package com.googlecode.simpleblobstore;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-
-import javax.inject.Inject;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -26,6 +19,7 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,102 +35,83 @@ public class BlobServiceTest {
 	public GuiceBerryRule guiceBerry = new GuiceBerryRule(
 			PlaceHolderGuiceBerryEnv.class);
 
-	@Inject
-	BlobService service;
-
 	final private byte[] data;
 
 	public BlobServiceTest(byte[] data) {
 		this.data = data;
 	}
 
-	
-	@Test
-	public void testDelete() throws Exception {
-		BlobKey key = saveInBlobstore(data);
-		byte[] retrieved = null;
-
-		retrieved = loadBytes(key);
-		assertNotNull(retrieved);
-
-		service.delete(key);
-		retrieved = loadBytes(key);
-		assertNull(retrieved);
-	}
-
 	private BlobKey saveInBlobstore(byte[] data) throws IOException {
-		File targetFile = File.createTempFile("bs-test-object", "jpg", null);
+		File targetFile = File.createTempFile("bs-test-object", ".jpg", null);
 		Files.write(data, targetFile);
-		String uploadUrl = service.createUploadUrl("/test-upload");
-		  CloseableHttpClient httpclient = HttpClients.createDefault();
-	        try {
-	        	HttpGet httpGet = new HttpGet("http://localhost:8080/test"); 
-	        	CloseableHttpResponse response = httpclient.execute(httpGet);
-	            try {
-	                System.out.println("---------------GET-------------------");
-	                System.out.println(response.getStatusLine());
-	                HttpEntity resEntity = response.getEntity();
-	                if (resEntity != null) {
-	                    System.out.println("Response content length: " + resEntity.getContentLength());
-	                }
-	                EntityUtils.consume(resEntity);
-	            } finally {
-	                response.close();
-	            }
-	        	
-	        	System.out.println("upload url: " + uploadUrl);
-	            HttpPost httppost = new HttpPost(uploadUrl);
+		String uploadUrl = "";
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		try {
+			HttpGet httpGet = new HttpGet("http://localhost:8080/test");
+			CloseableHttpResponse response = httpclient.execute(httpGet);
+			try {
+				System.out.println("---------------GET-------------------");
+				System.out.println(response.getStatusLine());
+				if (response.getStatusLine().getStatusCode() != 200) {
+					Assert.fail();
+				}
+				HttpEntity resEntity = response.getEntity();
+				if (resEntity != null) {
+					uploadUrl = EntityUtils.toString(resEntity);
+				}
+				EntityUtils.consume(resEntity);
+			} finally {
+				response.close();
+			}
 
-	            FileBody bin = new FileBody(targetFile);
-	            StringBody comment = new StringBody("A binary file of some kind", ContentType.TEXT_PLAIN);
+			System.out.println("upload url: " + uploadUrl);
+			HttpPost httppost = new HttpPost(uploadUrl);
 
-	            HttpEntity reqEntity = MultipartEntityBuilder.create()
-	                    .addPart("bin", bin)
-	                    .addPart("comment", comment)
-	                    .build();
+			FileBody bin = new FileBody(targetFile);
+			StringBody comment = new StringBody("A binary file of some kind",
+					ContentType.TEXT_PLAIN);
 
+			HttpEntity reqEntity = MultipartEntityBuilder.create()
+					.addPart("bin", bin).addPart("comment", comment).build();
 
-	            httppost.setEntity(reqEntity);
+			httppost.setEntity(reqEntity);
 
-	            System.out.println("executing request " + httppost.getRequestLine());
-	            response = httpclient.execute(httppost);
-	            try {
-	                System.out.println("----------------------------------------");
-	                System.out.println(response.getStatusLine());
-	                HttpEntity resEntity = response.getEntity();
-	                if (resEntity != null) {
-	                    System.out.println("Response content length: " + resEntity.getContentLength());
-	                }
-	                EntityUtils.consume(resEntity);
-	            } finally {
-	                response.close();
-	            }
-	        } finally {
-	            httpclient.close();
-	        }
-		
+			System.out
+					.println("executing request " + httppost.getRequestLine());
+			response = httpclient.execute(httppost);
+			try {
+				System.out.println("---------UPLOAD-----------------");
+				System.out.println(response.getStatusLine());
+				if (response.getStatusLine().getStatusCode() != 200) {
+					Assert.fail();
+				}
+				HttpEntity resEntity = response.getEntity();
+				if (resEntity != null) {
+					String r = EntityUtils.toString(resEntity);
+					System.out.println("Response content length: "
+							+ resEntity.getContentLength() + " " + r);
+				}
+				EntityUtils.consume(resEntity);
+			} finally {
+				response.close();
+			}
+		} finally {
+			httpclient.close();
+		}
+
 		return null;
-	}
-
-	private byte[] loadBytes(BlobKey key) {
-		return service.fetchData(key);
 	}
 
 	@Test
 	public void testSaveAndLoad() throws Exception {
-		//Thread.sleep(10000);
+		// Thread.sleep(10000);
 		BlobKey key = saveInBlobstore(data);
-//		byte[] retrieved = null;
-//
-//		retrieved = loadBytes(key);
-//		assertNotNull(retrieved);
-//		assertEquals(data.length, retrieved.length);
-//		assertTrue(Arrays.equals(data, retrieved));
-	}
-
-	public void testGetInfo() throws Exception {
-		BlobKey key = saveInBlobstore(data);
-		assertEquals(data.length, service.getInfo(key).getLength());
+		// byte[] retrieved = null;
+		//
+		// retrieved = loadBytes(key);
+		// assertNotNull(retrieved);
+		// assertEquals(data.length, retrieved.length);
+		// assertTrue(Arrays.equals(data, retrieved));
 	}
 
 	@Parameterized.Parameters

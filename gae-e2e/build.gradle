@@ -7,6 +7,11 @@ System.properties['appengine.sdk.root'] = System.properties['user.home'] + "/app
 
 appengine {
     disableUpdateCheck = true
+    
+     endpoints {
+            getClientLibsOnBuild = false
+            getDiscoveryDocsOnBuild = false
+        }
 }
 
 war {
@@ -22,6 +27,9 @@ dependencies {
 	compile libs.guice
 	compile libs.guice_servlet
 	compile libs.inject
+	compile project(path: ':blobstore-api', configuration: 'testCompile')
+    compile project(path: ':blobstore-gae')
+    
     functionalTestCompile project(path: ':blobstore-api', configuration: 'testCompile')
     functionalTestCompile project(path: ':blobstore-gae')
     functionalTestCompile libs.gae_testing
