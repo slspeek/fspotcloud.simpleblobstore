@@ -1,6 +1,7 @@
 package com.googlecode.simpleblobstore;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * User: steven
@@ -16,8 +17,9 @@ public interface BlobService {
     BlobKey save(String mimeType, byte[] data);
 
     BlobInfo getInfo(BlobKey key);
-
-    byte[] fetchData(BlobKey key);
+        
+    void serve(BlobKey blobKey,
+            HttpServletResponse response) throws java.io.IOException;
     
     java.util.Map<java.lang.String,java.util.List<BlobKey>> getUploads(HttpServletRequest request);
         

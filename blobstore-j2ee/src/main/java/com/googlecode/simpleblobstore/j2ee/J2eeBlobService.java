@@ -1,5 +1,6 @@
 package com.googlecode.simpleblobstore.j2ee;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import com.googlecode.simpleblobstore.BlobService;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class J2eeBlobService implements BlobService {
 
@@ -41,17 +43,7 @@ public class J2eeBlobService implements BlobService {
         return info;
     }
 
-    @Override
-    public byte[] fetchData(BlobKey key) {
-        Blob record = blobDao.find(Long.valueOf(key.getKeyString()));
-        byte[] data = null;
-        if (record != null) {
-            data = record.getData();
-        }
-        return data;
-    }
-
-	@Override
+    	@Override
 	public Map<String, List<BlobKey>> getUploads(HttpServletRequest request) {
 		// TODO Auto-generated method stub
 		return null;
@@ -61,5 +53,16 @@ public class J2eeBlobService implements BlobService {
 	public String createUploadUrl(String successUrl) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void serve(BlobKey blobKey, HttpServletResponse response)
+			throws IOException {
+	    Blob record = blobDao.find(Long.valueOf(blobKey.getKeyString()));
+        byte[] data = null;
+        if (record != null) {
+            data = record.getData();
+        }
+		// TODO Auto-generated method stub
 	}
 }

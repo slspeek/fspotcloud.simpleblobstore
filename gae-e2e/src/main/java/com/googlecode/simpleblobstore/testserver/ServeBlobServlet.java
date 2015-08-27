@@ -13,7 +13,7 @@ import com.google.inject.Singleton;
 
 @SuppressWarnings("serial")
 @Singleton
-public class BlobServlet extends HttpServlet {
+public class ServeBlobServlet extends HttpServlet {
 	 private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
 	    @Override

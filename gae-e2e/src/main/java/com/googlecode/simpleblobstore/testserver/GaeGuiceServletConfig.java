@@ -35,35 +35,35 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.googlecode.simpleblobstore.gae.GaeSimpleBlobstoreModule;
 
-
 public class GaeGuiceServletConfig extends GuiceServletContextListener {
-	  @Override
-	    protected Injector getInjector() {
-	        Injector i = Guice.createInjector(new GaeSimpleBlobstoreModule(),new TestServletModule(),
-	                new TestModule());
-	        return i;
-	    }
+	@Override
+	protected Injector getInjector() {
+		Injector i = Guice.createInjector(new GaeSimpleBlobstoreModule(),
+				new TestServletModule(), new TestModule());
+		return i;
+	}
 
-	    private class TestServletModule extends ServletModule {
+	private class TestServletModule extends ServletModule {
 
-	        @Override
-	        protected void configureServlets() {
-	            super.configureServlets();
-	            Logger.getAnonymousLogger().info("In module.");
-	            serve("/test").with(TestServlet.class);
-	            serve("/upload").with(UploadServlet.class);
-	            serve("/serve").with(BlobServlet.class);
-	        }
-	    }
+		@Override
+		protected void configureServlets() {
+			super.configureServlets();
+			Logger.getAnonymousLogger().info("In module.");
+			serve("/createurl").with(CreateUrlServlet.class);
+			serve("/upload").with(AfterUploadServlet.class);
+			serve("/serve").with(ServeBlobServlet.class);
+			serve("/delete").with(DeleteServlet.class);
+			serve("/info").with(InfoServlet.class);
+		}
+	}
 
-	    private class TestModule extends AbstractModule {
+	private class TestModule extends AbstractModule {
 
-	        @Override
-	        protected void configure() {
-	            bind(List.class).toInstance(new ArrayList<String>());
-	        }
+		@Override
+		protected void configure() {
+			bind(List.class).toInstance(new ArrayList<String>());
+		}
 
-	    }
+	}
 
-   
 }

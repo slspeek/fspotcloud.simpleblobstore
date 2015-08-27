@@ -20,9 +20,9 @@ import com.googlecode.simpleblobstore.gae.GaeSimpleBlobstoreModule;
 
 @SuppressWarnings("serial")
 @Singleton
-public class UploadServlet extends HttpServlet {
+public class AfterUploadServlet extends HttpServlet {
 
-	private Logger log = Logger.getLogger(UploadServlet.class.getName()); 
+	private Logger log = Logger.getLogger(AfterUploadServlet.class.getName()); 
     BlobService blobService = Guice.createInjector(new GaeSimpleBlobstoreModule()).getInstance(BlobService.class);
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -32,15 +32,10 @@ public class UploadServlet extends HttpServlet {
         log.info("Uploads " + uploads);
         OutputStream out = response.getOutputStream();
         PrintWriter p = new PrintWriter(out);
-        p.write(uploads.toString());
-//        p.write("Foo!");
+        List<BlobKey> keyList = uploads.get("bin");
+        BlobKey key = keyList.get(0);
+        p.write(key.getKeyString());
         p.close();
         out.close();
     }
-    
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	doPost(request, response);
-    }
-
-   
 }

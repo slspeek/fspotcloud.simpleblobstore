@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobstoreService;
@@ -84,35 +85,6 @@ public class GaeBlobService implements BlobService {
 	}
 
 	@Override
-	public byte[] fetchData(BlobKey key) {
-		BlobInfo info = getInfo(key);
-		if (info != null) {
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			long length = info.getLength();
-			long offset = 0;
-			long remainingLength = length;
-			while (remainingLength > 0) {
-				long numberOfBytesWeWillRead = Math.min(remainingLength,
-						MILLION);
-				byte[] result = gaeBlobService.fetchData(getGaeBlobKey(key),
-						offset, offset + numberOfBytesWeWillRead - 1);
-				try {
-					outputStream.write(result);
-				} catch (IOException e) {
-					e.printStackTrace(); // To change body of catch statement
-											// use File | Settings | File
-											// Templates.
-				}
-				remainingLength -= numberOfBytesWeWillRead;
-				offset += numberOfBytesWeWillRead;
-			}
-			return outputStream.toByteArray();
-		} else {
-			return null;
-		}
-	}
-
-	@Override
 	public Map<String, List<BlobKey>> getUploads(HttpServletRequest request) {
 		Map<String, List<com.google.appengine.api.blobstore.BlobKey>> gaeResult = null;
 		try {gaeResult = gaeBlobService
@@ -139,5 +111,11 @@ public class GaeBlobService implements BlobService {
 	@Override
 	public String createUploadUrl(String successUrl) {
 		return gaeBlobService.createUploadUrl(successUrl);
+	}
+
+	@Override
+	public void serve(BlobKey blobKey, HttpServletResponse response)
+			throws IOException {
+		gaeBlobService.serve(getGaeBlobKey(blobKey), response);
 	}
 }

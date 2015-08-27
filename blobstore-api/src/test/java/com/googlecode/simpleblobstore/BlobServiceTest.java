@@ -1,9 +1,11 @@
 package com.googlecode.simpleblobstore;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -45,12 +47,14 @@ public class BlobServiceTest {
 		File targetFile = File.createTempFile("bs-test-object", ".jpg", null);
 		Files.write(data, targetFile);
 		String uploadUrl = "";
+		BlobKey result = null;
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		try {
-			HttpGet httpGet = new HttpGet("http://localhost:8080/test");
+			HttpGet httpGet = new HttpGet("http://localhost:8080/createurl");
 			CloseableHttpResponse response = httpclient.execute(httpGet);
 			try {
-				System.out.println("---------------GET-------------------");
+				System.out
+						.println("---------------CREATEURL-CALL-------------------");
 				System.out.println(response.getStatusLine());
 				if (response.getStatusLine().getStatusCode() != 200) {
 					Assert.fail();
@@ -63,19 +67,13 @@ public class BlobServiceTest {
 			} finally {
 				response.close();
 			}
-
-			System.out.println("upload url: " + uploadUrl);
 			HttpPost httppost = new HttpPost(uploadUrl);
-
 			FileBody bin = new FileBody(targetFile);
 			StringBody comment = new StringBody("A binary file of some kind",
 					ContentType.TEXT_PLAIN);
-
 			HttpEntity reqEntity = MultipartEntityBuilder.create()
 					.addPart("bin", bin).addPart("comment", comment).build();
-
 			httppost.setEntity(reqEntity);
-
 			System.out
 					.println("executing request " + httppost.getRequestLine());
 			response = httpclient.execute(httppost);
@@ -87,9 +85,8 @@ public class BlobServiceTest {
 				}
 				HttpEntity resEntity = response.getEntity();
 				if (resEntity != null) {
-					String r = EntityUtils.toString(resEntity);
-					System.out.println("Response content length: "
-							+ resEntity.getContentLength() + " " + r);
+					result = new BlobKey(EntityUtils.toString(resEntity));
+					System.out.println("Returning:  " + result);
 				}
 				EntityUtils.consume(resEntity);
 			} finally {
@@ -98,20 +95,110 @@ public class BlobServiceTest {
 		} finally {
 			httpclient.close();
 		}
+		return result;
+	}
 
-		return null;
+	@Test
+	public void testGetInfo() throws Exception {
+		BlobKey key = saveInBlobstore(data);
+		assertEquals(data.length, getInfo(key).getLength());
+	}
+	
+	private BlobInfo getInfo(BlobKey key) throws IOException {
+		String result = null;
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		try {
+			HttpGet httpGet = new HttpGet("http://localhost:8080/info?id="
+					+ key.getKeyString());
+			CloseableHttpResponse response = httpclient.execute(httpGet);
+			try {
+				System.out
+						.println("---------------INFO-CALL-------------------");
+				System.out.println(response.getStatusLine());
+				if (response.getStatusLine().getStatusCode() == 200) {
+					HttpEntity resEntity = response.getEntity();
+					if (resEntity != null) {
+						result = EntityUtils.toString(resEntity);
+					}
+					EntityUtils.consume(resEntity);
+				}
+			} finally {
+				response.close();
+			}
+		} finally {
+			httpclient.close();
+		}
+		String mimeType = result.split(":")[1];
+		long length = Long.valueOf(result.split(":")[0]);
+		BlobInfo b = new BlobInfo(mimeType, length);
+		return b;
 	}
 
 	@Test
 	public void testSaveAndLoad() throws Exception {
-		// Thread.sleep(10000);
 		BlobKey key = saveInBlobstore(data);
-		// byte[] retrieved = null;
-		//
-		// retrieved = loadBytes(key);
-		// assertNotNull(retrieved);
-		// assertEquals(data.length, retrieved.length);
-		// assertTrue(Arrays.equals(data, retrieved));
+		byte[] retrieved = null;
+		retrieved = loadBytes(key);
+		assertNotNull(retrieved);
+		assertEquals(data.length, retrieved.length);
+		assertTrue(Arrays.equals(data, retrieved));
+	}
+
+	@Test
+	public void testDelete() throws Exception {
+		BlobKey key = saveInBlobstore(data);
+		byte[] retrieved = null;
+
+		retrieved = loadBytes(key);
+		assertNotNull(retrieved);
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		try {
+			HttpPost httpGet = new HttpPost("http://localhost:8080/delete?id="
+					+ key.getKeyString());
+			CloseableHttpResponse response = httpclient.execute(httpGet);
+			try {
+				System.out
+						.println("---------------DELETE-CALL-------------------");
+				System.out.println(response.getStatusLine());
+				if (response.getStatusLine().getStatusCode() != 200) {
+					Assert.fail();
+				}
+			} finally {
+				response.close();
+			}
+
+		} finally {
+			httpclient.close();
+		}
+		retrieved = loadBytes(key);
+		assertNull(retrieved);
+	}
+
+	private byte[] loadBytes(BlobKey key) throws IOException {
+		byte[] result = null;
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		try {
+			HttpGet httpGet = new HttpGet("http://localhost:8080/serve?id="
+					+ key.getKeyString());
+			CloseableHttpResponse response = httpclient.execute(httpGet);
+			try {
+				System.out
+						.println("---------------SERVEBLOB-CALL-------------------");
+				System.out.println(response.getStatusLine());
+				if (response.getStatusLine().getStatusCode() == 200) {
+					HttpEntity resEntity = response.getEntity();
+					if (resEntity != null) {
+						result = EntityUtils.toByteArray(resEntity);
+					}
+					EntityUtils.consume(resEntity);
+				}
+			} finally {
+				response.close();
+			}
+		} finally {
+			httpclient.close();
+		}
+		return result;
 	}
 
 	@Parameterized.Parameters
@@ -127,5 +214,4 @@ public class BlobServiceTest {
 		(new Random()).nextBytes(result);
 		return new Object[] { result };
 	}
-
 }
