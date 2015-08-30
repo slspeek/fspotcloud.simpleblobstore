@@ -32,7 +32,7 @@ dependencies {
     
     functionalTestCompile project(path: ':blobstore-api', configuration: 'testCompile')
     functionalTestCompile project(path: ':blobstore-gae')
-    functionalTestCompile libs.gae_testing
+    //functionalTestCompile libs.gae_testing
     functionalTestCompile libs.selenium
     functionalTestCompile libs.guiceberry
     functionalTestCompile libs.guava_testlib

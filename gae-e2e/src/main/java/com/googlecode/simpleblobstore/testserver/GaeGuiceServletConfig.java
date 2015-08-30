@@ -24,11 +24,8 @@
 
 package com.googlecode.simpleblobstore.testserver;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
@@ -39,12 +36,11 @@ public class GaeGuiceServletConfig extends GuiceServletContextListener {
 	@Override
 	protected Injector getInjector() {
 		Injector i = Guice.createInjector(new GaeSimpleBlobstoreModule(),
-				new TestServletModule(), new TestModule());
+				new TestServletModule());
 		return i;
 	}
 
 	private class TestServletModule extends ServletModule {
-
 		@Override
 		protected void configureServlets() {
 			super.configureServlets();
@@ -56,14 +52,4 @@ public class GaeGuiceServletConfig extends GuiceServletContextListener {
 			serve("/info").with(InfoServlet.class);
 		}
 	}
-
-	private class TestModule extends AbstractModule {
-
-		@Override
-		protected void configure() {
-			bind(List.class).toInstance(new ArrayList<String>());
-		}
-
-	}
-
 }

@@ -63,7 +63,6 @@ subprojects {
 
     sourceCompatibility = 1.7
     targetCompatibility = 1.7
-    //ext.libs = libs
 
     dependencies {
         jalopy 'jalopy:jalopy-ant:0.1-1.5b5', 'jalopy:jalopy:1.5rc3'
@@ -136,20 +135,7 @@ project(':blobstore-gae') {
 				compile libs.appengine_api
 				compile libs.inject, libs.guice, libs.guava
 
-				testCompile libs.gae_testing
 				testCompile libs.junit, libs.guiceberry, libs.guava_testlib, libs.servlet_spec, libs.httpclient
-		}
-
-		task unpackTest(dependsOn: ':blobstore-api:packageTests') << {
-				ant.unjar(dest: "$buildDir/classes/test", src: file("../blobstore-api/build/libs/blobstore-api-${version}-tests.jar"))
-		}
-
-		test.dependsOn unpackTest
-
-		test {
-				systemProperties['GuiceBerryEnvSelectorOverride_com.googlecode.simpleblobstore.PlaceHolderGuiceBerryEnv'] =
-						'com.googlecode.simpleblobstore.gae.GaeGuiceBerryEnv'
-				testLogging.showStandardStreams = true
 		}
 }
 
