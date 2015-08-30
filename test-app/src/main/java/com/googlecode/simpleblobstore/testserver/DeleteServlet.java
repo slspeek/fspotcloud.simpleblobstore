@@ -17,7 +17,7 @@ import com.googlecode.simpleblobstore.BlobService;
 @Singleton
 public class DeleteServlet extends HttpServlet {
 
-	private Logger log = Logger.getLogger(AfterUploadServlet.class.getName());
+	private Logger log = Logger.getLogger(DeleteServlet.class.getName());
 	@Inject
 	BlobService blobService;
 

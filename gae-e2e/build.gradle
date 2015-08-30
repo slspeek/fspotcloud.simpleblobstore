@@ -14,14 +14,6 @@ appengine {
         }
 }
 
-war {
-    webXml = file('src/main/webapp/WEB-INF/web.xml')
-    from "src/main/webapp"
-}
-
-//appengineRun.daemon = Boolean.parseBoolean(server_daemon)
-//appengineRun.daemon = true
-
 dependencies {
 	compile libs.servlet_spec
 	compile libs.guice
@@ -29,11 +21,10 @@ dependencies {
 	compile libs.inject
 	compile project(path: ':blobstore-api', configuration: 'testCompile')
     compile project(path: ':blobstore-gae')
+    compile project(path: ':test-app')
     
     functionalTestCompile project(path: ':blobstore-api', configuration: 'testCompile')
     functionalTestCompile project(path: ':blobstore-gae')
-    //functionalTestCompile libs.gae_testing
-    functionalTestCompile libs.selenium
     functionalTestCompile libs.guiceberry
     functionalTestCompile libs.guava_testlib
     functionalTestCompile libs.junit
@@ -46,7 +37,11 @@ task unpackTest(dependsOn: ":blobstore-api:packageTests") << {
     ant.unjar(dest: "$buildDir/classes/functionalTest", src: myTests)
 }
 
-appengineFunctionalTest.dependsOn unpackTest
+task unpackTestApp(dependsOn: ":test-app:war") << {
+    def app = file("../test-app/build/libs/test-app-${version}.war")
+    ant.unjar(dest: "$buildDir/exploded-app/", src: app)
+}
+appengineRun.dependsOn unpackTest, unpackTestApp
 
 appengineFunctionalTest {
 	systemProperties['GuiceBerryEnvSelectorOverride_com.googlecode.simpleblobstore.PlaceHolderGuiceBerryEnv'] =

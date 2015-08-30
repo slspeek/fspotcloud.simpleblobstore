@@ -1,8 +1,16 @@
 description = 'Test web-application'
 
+apply plugin: 'war'
+
+war {
+    webXml = file('src/main/webapp/WEB-INF/web.xml')
+    from "src/main/webapp"
+}
+
 dependencies {
+    compile project(':blobstore-api')
     compile libs.inject
     compile libs.guice
-    compile project(':blobstore-api')
+    compile libs.guice_servlet
     compile libs.servlet_spec
 }

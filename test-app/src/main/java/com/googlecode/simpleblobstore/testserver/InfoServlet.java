@@ -20,7 +20,7 @@ import com.googlecode.simpleblobstore.BlobService;
 @Singleton
 public class InfoServlet extends HttpServlet {
 
-	private Logger log = Logger.getLogger(AfterUploadServlet.class.getName());
+	private Logger log = Logger.getLogger(InfoServlet.class.getName());
 	@Inject
 	BlobService blobService;
 
