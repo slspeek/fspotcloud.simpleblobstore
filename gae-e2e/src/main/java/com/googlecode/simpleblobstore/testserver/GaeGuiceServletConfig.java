@@ -46,7 +46,6 @@ public class GaeGuiceServletConfig extends GuiceServletContextListener {
 			super.configureServlets();
 			Logger.getAnonymousLogger().info("In module.");
 			serve("/createurl").with(CreateUrlServlet.class);
-			serve("/upload").with(AfterUploadServlet.class);
 			serve("/serve").with(ServeBlobServlet.class);
 			serve("/delete").with(DeleteServlet.class);
 			serve("/info").with(InfoServlet.class);

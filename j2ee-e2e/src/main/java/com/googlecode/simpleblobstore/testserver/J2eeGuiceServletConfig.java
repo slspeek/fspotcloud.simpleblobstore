@@ -36,8 +36,8 @@ import com.googlecode.simplejpadao.EntityModule;
 public class J2eeGuiceServletConfig extends GuiceServletContextListener {
 	@Override
 	protected Injector getInjector() {
-		Injector i = Guice.createInjector(new J2eeSimpleBlobstoreModule(),new EntityModule("derby"),
-				new TestServletModule());
+		Injector i = Guice.createInjector(new J2eeSimpleBlobstoreModule(),
+				new EntityModule("derby"), new TestServletModule());
 		return i;
 	}
 
@@ -47,7 +47,6 @@ public class J2eeGuiceServletConfig extends GuiceServletContextListener {
 			super.configureServlets();
 			Logger.getAnonymousLogger().info("In module.");
 			serve("/createurl").with(CreateUrlServlet.class);
-			serve("/upload").with(J2eeAfterUploadServlet.class);
 			serve("/serve").with(ServeBlobServlet.class);
 			serve("/delete").with(DeleteServlet.class);
 			serve("/info").with(InfoServlet.class);

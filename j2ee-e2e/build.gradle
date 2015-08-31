@@ -23,13 +23,8 @@ dependencies {
     tomcat libs.tomcat
 
 	providedCompile libs.servlet_spec
-    compile( project(path: ':test-app')){
-	    exclude group:'org.apache.geronimo.specs', module:'geronimo-servlet_2.5_spec'
-    }
-    //compile project(path: ':blobstore-j2ee')
-    compile(project(path: ':blobstore-j2ee')){
-    	exclude group:'org.apache.geronimo.specs', module:'geronimo-servlet_2.5_spec'
-    }
+    compile project(path: ':test-app')
+    compile project(path: ':blobstore-j2ee')
     testCompile libs.selenium
     testCompile libs.guiceberry
     testCompile libs.guava_testlib
