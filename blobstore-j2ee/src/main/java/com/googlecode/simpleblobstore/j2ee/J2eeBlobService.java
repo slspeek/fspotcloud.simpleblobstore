@@ -4,17 +4,22 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import com.googlecode.simpleblobstore.BlobInfo;
-import com.googlecode.simpleblobstore.BlobKey;
-import com.googlecode.simpleblobstore.BlobService;
-
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.inject.Provider;
+import com.googlecode.simpleblobstore.BlobInfo;
+import com.googlecode.simpleblobstore.BlobKey;
+import com.googlecode.simpleblobstore.BlobService;
+
 public class J2eeBlobService implements BlobService {
 
+	@javax.inject.Inject
+    @ServerAddress
+    Provider<String> serverAddressProvider;
 
+	
     @Inject
     BlobDao blobDao;
 
@@ -52,7 +57,7 @@ public class J2eeBlobService implements BlobService {
 	@Override
 	public String createUploadUrl(String successUrl) {
 		// TODO Auto-generated method stub
-		return null;
+		return serverAddressProvider.get() + "/_ah/upload";
 	}
 
 	@Override

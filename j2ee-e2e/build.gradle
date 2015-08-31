@@ -20,11 +20,13 @@ war {
 }
 
 dependencies {
-    tomcat libs.tomcat
+   	tomcat libs.tomcat
 
 	providedCompile libs.servlet_spec
+	
     compile project(path: ':test-app')
     compile project(path: ':blobstore-j2ee')
+    
     testCompile libs.selenium
     testCompile libs.guiceberry
     testCompile libs.guava_testlib
@@ -33,7 +35,7 @@ dependencies {
 }
 
 task unpackTest(dependsOn: ':blobstore-api:packageTests') << {
-        ant.unjar(dest: "$buildDir/classes/test", src: file("../blobstore-api/build/libs/blobstore-api-${version}-tests.jar"))
+    ant.unjar(dest: "$buildDir/classes/test", src: file("../blobstore-api/build/libs/blobstore-api-${version}-tests.jar"))
  }
  
 
@@ -41,9 +43,9 @@ task unpackTest(dependsOn: ':blobstore-api:packageTests') << {
 test.dependsOn unpackTest
 
 test {
-        systemProperties['GuiceBerryEnvSelectorOverride_com.googlecode.simpleblobstore.PlaceHolderGuiceBerryEnv'] =
+    systemProperties['GuiceBerryEnvSelectorOverride_com.googlecode.simpleblobstore.PlaceHolderGuiceBerryEnv'] =
             'com.googlecode.simpleblobstore.j2ee.J2eeGuiceBerryEnv'
-        testLogging.showStandardStreams = true
+    testLogging.showStandardStreams = true
 }
     
 test.dependsOn tomcatRunWar

@@ -143,7 +143,7 @@ project(':blobstore-gae') {
 project(':blobstore-j2ee') {
     dependencies {
         compile project(':blobstore-api')
-        compile libs.inject, libs.guice, libs.guava
+        compile libs.inject, libs.guice, libs.guice_servlet, libs.guava, libs.servlet_spec
         compile libs.simple_jpa_dao_api, libs.derby_all, libs.hibernate_all, libs.simple_jpa_dao_impl
 
         testCompile libs.junit, libs.guiceberry, libs.guava_testlib
