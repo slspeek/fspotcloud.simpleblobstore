@@ -1,0 +1,70 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.1'
+    }
+}
+
+description = 'e2e testing for blobstore j2ee'
+
+apply plugin: 'com.bmuschko.tomcat'
+apply plugin: 'war'
+
+war {   
+    rootSpec.exclude("**/geronimo-servlet_2.5_spec-1.2.jar")
+    from "src/main/webapp"
+    from "src/main/resources"
+}
+
+dependencies {
+    tomcat libs.tomcat
+
+	providedCompile libs.servlet_spec
+    compile( project(path: ':test-app')){
+	    exclude group:'org.apache.geronimo.specs', module:'geronimo-servlet_2.5_spec'
+    }
+    //compile project(path: ':blobstore-j2ee')
+    compile(project(path: ':blobstore-j2ee')){
+    	exclude group:'org.apache.geronimo.specs', module:'geronimo-servlet_2.5_spec'
+    }
+    testCompile libs.selenium
+    testCompile libs.guiceberry
+    testCompile libs.guava_testlib
+    testCompile libs.junit
+    testCompile libs.guice
+}
+
+task unpackTest(dependsOn: ':blobstore-api:packageTests') << {
+        ant.unjar(dest: "$buildDir/classes/test", src: file("../blobstore-api/build/libs/blobstore-api-${version}-tests.jar"))
+ }
+ 
+
+
+test.dependsOn unpackTest
+
+test {
+        systemProperties['GuiceBerryEnvSelectorOverride_com.googlecode.simpleblobstore.PlaceHolderGuiceBerryEnv'] =
+            'com.googlecode.simpleblobstore.j2ee.J2eeGuiceBerryEnv'
+        testLogging.showStandardStreams = true
+}
+    
+test.dependsOn tomcatRunWar
+
+
+test << {
+	tomcatStop.execute()
+}
+
+[tomcatRunWar, tomcatStop]*.stopPort = 8060
+[tomcatRunWar, tomcatStop]*.stopKey = 'STOP'
+tomcatRunWar.httpPort = 9050
+
+
+tomcatRunWar {
+    //webAppSourceDirectory = file("build/exploded")
+    daemon = true
+}
+

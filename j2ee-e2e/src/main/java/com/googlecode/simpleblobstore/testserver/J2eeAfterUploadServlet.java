@@ -17,14 +17,15 @@ import com.google.inject.Guice;
 import com.google.inject.Singleton;
 import com.googlecode.simpleblobstore.BlobKey;
 import com.googlecode.simpleblobstore.BlobService;
-import com.googlecode.simpleblobstore.gae.GaeSimpleBlobstoreModule;
+import com.googlecode.simpleblobstore.j2ee.J2eeSimpleBlobstoreModule;
+import com.googlecode.simplejpadao.EntityModule;
 
 @SuppressWarnings("serial")
 @Singleton
-public class AfterUploadServlet extends HttpServlet {
+public class J2eeAfterUploadServlet extends HttpServlet {
 
-	private Logger log = Logger.getLogger(AfterUploadServlet.class.getName()); 
-    BlobService blobService = Guice.createInjector(new GaeSimpleBlobstoreModule()).getInstance(BlobService.class);
+	private Logger log = Logger.getLogger(J2eeAfterUploadServlet.class.getName()); 
+    BlobService blobService = Guice.createInjector(new J2eeSimpleBlobstoreModule(), new EntityModule("derby")).getInstance(BlobService.class);
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

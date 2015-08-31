@@ -1,7 +1,10 @@
 package com.googlecode.simpleblobstore;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +12,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+
+import javax.inject.Inject;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -37,6 +42,7 @@ public class BlobServiceTest {
 	public GuiceBerryRule guiceBerry = new GuiceBerryRule(
 			PlaceHolderGuiceBerryEnv.class);
 
+	@Inject private String URLBASE;
 	final private byte[] data;
 
 	public BlobServiceTest(byte[] data) {
@@ -50,7 +56,7 @@ public class BlobServiceTest {
 		BlobKey result = null;
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		try {
-			HttpGet httpGet = new HttpGet("http://localhost:8080/createurl");
+			HttpGet httpGet = new HttpGet(URLBASE + "createurl");
 			CloseableHttpResponse response = httpclient.execute(httpGet);
 			try {
 				System.out
@@ -108,7 +114,7 @@ public class BlobServiceTest {
 		String result = null;
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		try {
-			HttpGet httpGet = new HttpGet("http://localhost:8080/info?id="
+			HttpGet httpGet = new HttpGet(URLBASE + "info?id="
 					+ key.getKeyString());
 			CloseableHttpResponse response = httpclient.execute(httpGet);
 			try {
@@ -153,7 +159,7 @@ public class BlobServiceTest {
 		assertNotNull(retrieved);
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		try {
-			HttpPost httpGet = new HttpPost("http://localhost:8080/delete?id="
+			HttpPost httpGet = new HttpPost(URLBASE + "delete?id="
 					+ key.getKeyString());
 			CloseableHttpResponse response = httpclient.execute(httpGet);
 			try {
@@ -178,7 +184,7 @@ public class BlobServiceTest {
 		byte[] result = null;
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		try {
-			HttpGet httpGet = new HttpGet("http://localhost:8080/serve?id="
+			HttpGet httpGet = new HttpGet(URLBASE + "serve?id="
 					+ key.getKeyString());
 			CloseableHttpResponse response = httpclient.execute(httpGet);
 			try {

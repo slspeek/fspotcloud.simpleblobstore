@@ -3,7 +3,6 @@ description = 'Test web-application'
 apply plugin: 'war'
 
 war {
-    webXml = file('src/main/webapp/WEB-INF/web.xml')
     from "src/main/webapp"
 }
 

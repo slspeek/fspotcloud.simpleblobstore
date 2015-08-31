@@ -7,6 +7,6 @@ public class GaeGuiceBerryEnv extends GuiceBerryModule {
 	@Override
 	protected void configure() {
 		super.configure();
-		install(new GaeSimpleBlobstoreModule());
+		bind(String.class).toInstance("http://localhost:8080/");
 	}
 }

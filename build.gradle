@@ -148,16 +148,4 @@ project(':blobstore-j2ee') {
 
         testCompile libs.junit, libs.guiceberry, libs.guava_testlib
     }
-
-    task unpackTest(dependsOn: ':blobstore-api:packageTests') << {
-        ant.unjar(dest: "$buildDir/classes/test", src: file("../blobstore-api/build/libs/blobstore-api-${version}-tests.jar"))
-    }
-
-    test.dependsOn unpackTest
-
-    test {
-        systemProperties['GuiceBerryEnvSelectorOverride_com.googlecode.simpleblobstore.PlaceHolderGuiceBerryEnv'] =
-            'com.googlecode.simpleblobstore.j2ee.J2eeGuiceBerryEnv'
-        testLogging.showStandardStreams = true
-    }
 }

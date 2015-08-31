@@ -1,14 +1,12 @@
 package com.googlecode.simpleblobstore.j2ee;
 
 import com.google.guiceberry.GuiceBerryModule;
-import com.googlecode.simplejpadao.EntityModule;
 
 public class J2eeGuiceBerryEnv extends GuiceBerryModule {
 
     @Override
     protected void configure() {
         super.configure();
-        install(new J2eeSimpleBlobstoreModule());
-        install(new EntityModule("derby"));
+        bind(String.class).toInstance("http://localhost:9050/j2ee-e2e/");
     }
 }
