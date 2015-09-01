@@ -8,34 +8,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.inject.Guice;
 import com.google.inject.Singleton;
 import com.googlecode.simpleblobstore.BlobKey;
 import com.googlecode.simpleblobstore.BlobService;
-import com.googlecode.simpleblobstore.j2ee.J2eeSimpleBlobstoreModule;
-import com.googlecode.simplejpadao.EntityModule;
 
 @SuppressWarnings("serial")
 @Singleton
 public class J2eeAfterUploadServlet extends HttpServlet {
 
 	private Logger log = Logger.getLogger(J2eeAfterUploadServlet.class.getName()); 
-    BlobService blobService = Guice.createInjector(new J2eeSimpleBlobstoreModule(), new EntityModule("derby")).getInstance(BlobService.class);
+    @Inject BlobService blobService;
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     	log.info("UPLOADSERVLET");
-    	Enumeration headerNames = request.getHeaderNames();
-    	while(headerNames.hasMoreElements()) {
-    	  String headerName = (String)headerNames.nextElement();
-    	  System.out.println(headerName + " : " + request.getHeader(headerName));
-    	}
-    	
+//    	Enumeration headerNames = request.getHeaderNames();
+//    	while(headerNames.hasMoreElements()) {
+//    	  String headerName = (String)headerNames.nextElement();
+//    	  System.out.println(headerName + " : " + request.getHeader(headerName));
+//    	}
+//    	
         Map<String, List<BlobKey>> uploads = blobService.getUploads(request);
         log.info("Uploads " + uploads);
         OutputStream out = response.getOutputStream();

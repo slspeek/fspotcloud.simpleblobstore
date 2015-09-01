@@ -1,26 +1,29 @@
 package com.googlecode.simpleblobstore.j2ee;
 
-import org.hibernate.annotations.GenericGenerator;
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Lob;
 
-import javax.persistence.*;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 public class BlobEntity implements Blob {
 
     @Id
     @GeneratedValue(generator = "increment")
-    //@GeneratedValue(strategy = GenerationType.IDENTITY) //Derby with Hibernate do not want this, I know
+    //@GeneratedValue(strategy = GenerationType.IDENTITY) //Derby with Hibernate does not want this, I know
     @GenericGenerator(name = "increment", strategy = "increment")
     private Long id;
     @Lob
     private byte[] data;
     @Basic
     private String mimeType;
-    @Basic
-    private long size;
-
+   
     public long getSize() {
-        return size;
+        return data.length;
     }
 
     public BlobEntity() {
@@ -29,7 +32,6 @@ public class BlobEntity implements Blob {
     public BlobEntity(byte[] data, String mimeType) {
         this.data = data;
         this.mimeType = mimeType;
-        this.size = data.length;
     }
 
     @Override
@@ -55,11 +57,7 @@ public class BlobEntity implements Blob {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer();
-        sb.append("BlobEntity");
-        sb.append("{id=").append(id);
-        sb.append(", mimeType='").append(mimeType).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return new ToStringBuilder(this).append("id", id)
+        		.append("size", getSize()).append("mime", mimeType).toString();
     }
 }

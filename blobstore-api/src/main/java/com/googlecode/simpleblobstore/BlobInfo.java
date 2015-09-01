@@ -1,5 +1,7 @@
 package com.googlecode.simpleblobstore;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 /**
  * Created with IntelliJ IDEA.
  * User: steven
@@ -23,5 +25,11 @@ public class BlobInfo {
 
     public long getLength() {
         return length;
+    }
+    
+    public String toString() {
+    	return new ToStringBuilder(this).append("mime", mimeType)
+    							 .append("len", length).toString();
+    	
     }
 }

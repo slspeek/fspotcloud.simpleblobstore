@@ -16,15 +16,4 @@
     <listener>
         <listener-class>com.googlecode.simpleblobstore.testserver.J2eeGuiceServletConfig</listener-class>
     </listener>
-  <servlet>
-    <servlet-name>Upload</servlet-name>
-    <servlet-class>com.googlecode.simpleblobstore.testserver.J2eeAfterUploadServlet</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>Upload</servlet-name>
-    <url-pattern>/upload</url-pattern>
-  </servlet-mapping>
-
-
-</web-app>
+  </web-app>

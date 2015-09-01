@@ -14,7 +14,6 @@ apply plugin: 'com.bmuschko.tomcat'
 apply plugin: 'war'
 
 war {   
-    rootSpec.exclude("**/geronimo-servlet_2.5_spec-1.2.jar")
     from "src/main/webapp"
     from "src/main/resources"
 }

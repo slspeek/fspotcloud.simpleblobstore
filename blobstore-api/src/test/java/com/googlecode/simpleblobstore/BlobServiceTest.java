@@ -58,6 +58,7 @@ public class BlobServiceTest {
 		try {
 			HttpGet httpGet = new HttpGet(URLBASE + "createurl");
 			CloseableHttpResponse response = httpclient.execute(httpGet);
+			System.out.println(httpGet.getRequestLine());
 			try {
 				System.out
 						.println("---------------CREATEURL-CALL-------------------");
@@ -79,6 +80,7 @@ public class BlobServiceTest {
 					ContentType.TEXT_PLAIN);
 			HttpEntity reqEntity = MultipartEntityBuilder.create()
 					.addPart("bin", bin).addPart("comment", comment).build();
+
 			httppost.setEntity(reqEntity);
 			System.out
 					.println("executing request " + httppost.getRequestLine());
@@ -134,8 +136,14 @@ public class BlobServiceTest {
 		} finally {
 			httpclient.close();
 		}
-		String mimeType = result.split(":")[1];
+		System.out
+		.println("About to split " + result);
+
 		long length = Long.valueOf(result.split(":")[0]);
+		String mimeType = "";
+		if(result.split(":").length > 1) {
+			mimeType = result.split(":")[1];
+		};
 		BlobInfo b = new BlobInfo(mimeType, length);
 		return b;
 	}

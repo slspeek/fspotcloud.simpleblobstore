@@ -45,11 +45,11 @@ public class J2eeGuiceServletConfig extends GuiceServletContextListener {
 		@Override
 		protected void configureServlets() {
 			super.configureServlets();
-			Logger.getAnonymousLogger().info("In module.");
 			serve("/createurl").with(CreateUrlServlet.class);
 			serve("/serve").with(ServeBlobServlet.class);
 			serve("/delete").with(DeleteServlet.class);
 			serve("/info").with(InfoServlet.class);
+			serve("/upload").with(J2eeAfterUploadServlet.class);
 		}
 	}
 }
