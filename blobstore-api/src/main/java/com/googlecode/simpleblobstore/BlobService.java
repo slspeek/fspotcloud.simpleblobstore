@@ -13,9 +13,6 @@ public interface BlobService {
 
     void delete(BlobKey key);
 
-    @Deprecated
-    BlobKey save(String mimeType, byte[] data);
-
     BlobInfo getInfo(BlobKey key);
         
     void serve(BlobKey blobKey,

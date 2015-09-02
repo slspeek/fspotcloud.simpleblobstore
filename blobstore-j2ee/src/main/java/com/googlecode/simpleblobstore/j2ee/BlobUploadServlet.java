@@ -32,12 +32,11 @@ public class BlobUploadServlet extends HttpServlet {
 
 	private Logger log = Logger.getLogger(BlobUploadServlet.class.getName());
 	@Inject
-	BlobService blobService;
+	J2eeBlobService blobService;
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		log.info("BLOBUPLOADSERVLET");
 		String successUrl = request.getParameter("next");
 		if (ServletFileUpload.isMultipartContent(request)) {
 			// Create a factory for disk-based file items
@@ -69,7 +68,6 @@ public class BlobUploadServlet extends HttpServlet {
 				}
 				request.setAttribute(J2eeBlobService.UPLOADS_ATTRIBUTE, result);
 				RequestDispatcher dispatcher = request.getRequestDispatcher(successUrl);
-				log.info("Dispatching to: " + successUrl);
 				dispatcher.forward(request, response);
 			} catch (FileUploadException e) {
 				throw new ServletException(e);

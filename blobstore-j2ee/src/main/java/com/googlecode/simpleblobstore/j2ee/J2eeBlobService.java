@@ -25,7 +25,6 @@ public class J2eeBlobService implements BlobService {
 	@javax.inject.Inject
     @ServerAddress
     Provider<String> serverAddressProvider;
-
 	
     @Inject
     BlobDao blobDao;
@@ -35,7 +34,6 @@ public class J2eeBlobService implements BlobService {
         blobDao.deleteByKey(Long.valueOf(key.getKeyString()));
     }
 
-    @Override
     public BlobKey save(String mimeType, byte[] data) {
         Blob blobRecord = blobDao.newEntity();
         blobRecord.setData(data);
@@ -55,7 +53,7 @@ public class J2eeBlobService implements BlobService {
         return info;
     }
 
-    	@Override
+   	@Override
 	public Map<String, List<BlobKey>> getUploads(HttpServletRequest request) {
 		@SuppressWarnings("unchecked")
 		Map<String, List<String>> uploads = (Map<String, List<String>>) request.getAttribute(UPLOADS_ATTRIBUTE);

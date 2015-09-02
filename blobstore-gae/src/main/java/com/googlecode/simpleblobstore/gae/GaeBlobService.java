@@ -51,27 +51,6 @@ public class GaeBlobService implements BlobService {
 	}
 
 	@Override
-	public BlobKey save(String mimeType, byte[] data) {
-
-		try {
-			AppEngineFile file = fileService.createNewBlobFile(mimeType);
-			// Open a channel to write to it
-			boolean lock = true;
-			FileWriteChannel writeChannel = fileService.openWriteChannel(file,
-					lock);
-			ByteBuffer buf = ByteBuffer.wrap(data);
-			writeChannel.write(buf);
-			writeChannel.closeFinally();
-
-			com.google.appengine.api.blobstore.BlobKey blobKey = fileService
-					.getBlobKey(file);
-			return new BlobKey(blobKey.getKeyString());
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
 	public BlobInfo getInfo(BlobKey key) {
 		com.google.appengine.api.blobstore.BlobInfo gaeInfo = infoFactory
 				.loadBlobInfo(getGaeBlobKey(key));
