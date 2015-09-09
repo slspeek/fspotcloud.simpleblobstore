@@ -1,8 +1,6 @@
 package com.googlecode.simpleblobstore.gae;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobstoreService;
-import com.google.appengine.api.files.AppEngineFile;
-import com.google.appengine.api.files.FileService;
-import com.google.appengine.api.files.FileWriteChannel;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.googlecode.simpleblobstore.BlobInfo;
@@ -28,9 +23,7 @@ public class GaeBlobService implements BlobService {
 	BlobstoreService gaeBlobService;
 	@Inject
 	BlobInfoFactory infoFactory;
-	@Inject
-	FileService fileService;
-
+	
 	@Override
 	public void delete(BlobKey blobKey) {
 		com.google.appengine.api.blobstore.BlobKey appengineKey = getGaeBlobKey(blobKey);
@@ -44,7 +37,7 @@ public class GaeBlobService implements BlobService {
 
 	private BlobKey getBlobKey(com.google.appengine.api.blobstore.BlobKey key) {
 		if (key != null) {
-		return new BlobKey(key.getKeyString());
+			return new BlobKey(key.getKeyString());
 		} else {
 			throw new IllegalArgumentException();
 		}
@@ -66,10 +59,10 @@ public class GaeBlobService implements BlobService {
 	@Override
 	public Map<String, List<BlobKey>> getUploads(HttpServletRequest request) {
 		Map<String, List<com.google.appengine.api.blobstore.BlobKey>> gaeResult = null;
-		try {gaeResult = gaeBlobService
-				.getUploads(request);
+		try {
+			gaeResult = gaeBlobService.getUploads(request);
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 		Map<String, List<BlobKey>> result = Maps.newHashMap();
 		if (gaeResult != null) {

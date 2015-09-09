@@ -1,6 +1,8 @@
 package com.googlecode.simpleblobstore;
 
-public class BlobKey {
+import java.io.Serializable;
+
+public class BlobKey implements Serializable{
 
     private final String keyString;
 

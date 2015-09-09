@@ -11,10 +11,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -27,13 +29,16 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import com.google.guiceberry.junit4.GuiceBerryRule;
+import com.googlecode.simpleblobstore.client.BlobstoreClient;
 
 @RunWith(Parameterized.class)
 public class BlobServiceTest {
@@ -93,7 +98,8 @@ public class BlobServiceTest {
 				}
 				HttpEntity resEntity = response.getEntity();
 				if (resEntity != null) {
-					result = new BlobKey(EntityUtils.toString(resEntity));
+					Map<String, List<BlobKey>> servletResult = SerializationUtils.deserialize(EntityUtils.toByteArray(resEntity));
+					result = servletResult.get("bin").get(0);
 					System.out.println("Returning:  " + result);
 				}
 				EntityUtils.consume(resEntity);
@@ -103,6 +109,15 @@ public class BlobServiceTest {
 		} finally {
 			httpclient.close();
 		}
+		return result;
+	}
+
+	private BlobKey simpleSaveInBlobstore(byte[] data) throws IOException {
+		BlobstoreClient client = new BlobstoreClient(URLBASE);
+		Map<String, byte[]> dataMap = Maps.newHashMap();
+		dataMap.put("data", data);
+		Map<String, List<BlobKey>> r = client.upload(dataMap);
+		BlobKey result = r.get("data").get(0);
 		return result;
 	}
 
@@ -151,6 +166,17 @@ public class BlobServiceTest {
 	@Test
 	public void testSaveAndLoad() throws Exception {
 		BlobKey key = saveInBlobstore(data);
+		byte[] retrieved = null;
+		retrieved = loadBytes(key);
+		assertNotNull(retrieved);
+		assertEquals(data.length, retrieved.length);
+		assertTrue(Arrays.equals(data, retrieved));
+	}
+	
+	//@Ignore
+	@Test
+	public void testSimpleSaveAndLoad() throws Exception {
+		BlobKey key = simpleSaveInBlobstore(data);
 		byte[] retrieved = null;
 		retrieved = loadBytes(key);
 		assertNotNull(retrieved);

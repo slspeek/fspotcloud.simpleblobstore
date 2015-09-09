@@ -24,12 +24,11 @@
 
 package com.googlecode.simpleblobstore.testserver;
 
-import java.util.logging.Logger;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
+import com.googlecode.simpleblobstore.DefaultAfterUploadServlet;
 import com.googlecode.simpleblobstore.j2ee.J2eeSimpleBlobstoreModule;
 import com.googlecode.simplejpadao.EntityModule;
 
@@ -37,7 +36,7 @@ public class J2eeGuiceServletConfig extends GuiceServletContextListener {
 	@Override
 	protected Injector getInjector() {
 		Injector i = Guice.createInjector(new J2eeSimpleBlobstoreModule(),
-				new EntityModule("derby"), new TestServletModule());
+				new EntityModule("derby"), new TestAppModule(), new TestServletModule());
 		return i;
 	}
 
@@ -45,11 +44,8 @@ public class J2eeGuiceServletConfig extends GuiceServletContextListener {
 		@Override
 		protected void configureServlets() {
 			super.configureServlets();
-			serve("/createurl").with(CreateUrlServlet.class);
-			serve("/serve").with(ServeBlobServlet.class);
-			serve("/delete").with(DeleteServlet.class);
-			serve("/info").with(InfoServlet.class);
 			serve("/upload").with(J2eeAfterUploadServlet.class);
+			serve("/defaultupload").with(DefaultAfterUploadServlet.class);
 		}
 	}
 }

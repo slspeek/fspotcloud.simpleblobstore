@@ -24,7 +24,6 @@ import org.apache.commons.io.IOUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.googlecode.simpleblobstore.BlobKey;
-import com.googlecode.simpleblobstore.BlobService;
 
 @SuppressWarnings("serial")
 @Singleton

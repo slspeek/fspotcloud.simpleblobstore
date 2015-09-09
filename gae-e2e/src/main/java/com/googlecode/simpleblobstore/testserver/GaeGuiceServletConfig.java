@@ -24,31 +24,16 @@
 
 package com.googlecode.simpleblobstore.testserver;
 
-import java.util.logging.Logger;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
-import com.google.inject.servlet.ServletModule;
 import com.googlecode.simpleblobstore.gae.GaeSimpleBlobstoreModule;
 
 public class GaeGuiceServletConfig extends GuiceServletContextListener {
 	@Override
 	protected Injector getInjector() {
 		Injector i = Guice.createInjector(new GaeSimpleBlobstoreModule(),
-				new TestServletModule());
+				new TestAppModule());
 		return i;
-	}
-
-	private class TestServletModule extends ServletModule {
-		@Override
-		protected void configureServlets() {
-			super.configureServlets();
-			Logger.getAnonymousLogger().info("In module.");
-			serve("/createurl").with(CreateUrlServlet.class);
-			serve("/serve").with(ServeBlobServlet.class);
-			serve("/delete").with(DeleteServlet.class);
-			serve("/info").with(InfoServlet.class);
-		}
 	}
 }

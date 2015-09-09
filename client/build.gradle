@@ -1,0 +1,10 @@
+description = 'Blobstore remote HTTP client'
+
+dependencies {
+	compile project(path: ':blobstore-api')
+	compile libs.guice
+	compile libs.inject
+	compile libs.httpclient
+	compile libs.guava
+}
+

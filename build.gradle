@@ -108,13 +108,15 @@ project(':blobstore-api') {
     dependencies {
     
     	compile  libs.servlet_spec
+    	compile libs.inject, libs.guice
     	compile 'org.apache.commons:commons-lang3:3.4'
     	
         testCompile libs.inject,
                 libs.junit,
                 libs.guiceberry,
                 libs.guava_testlib,
-                libs.guice, libs.httpclient
+                libs.guice, libs.httpclient,
+                project(':client')
     }
 
     task packageTests(type: Jar, dependsOn: compileTestJava) {
