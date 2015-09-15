@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.http.HttpEntity;
@@ -21,6 +23,8 @@ import com.google.common.io.Files;
 import com.googlecode.simpleblobstore.BlobKey;
 
 public class BlobstoreClient {
+	
+	private final Logger log = Logger.getLogger(BlobstoreClient.class.getName());
 
 	private final String urlBase;
 
@@ -40,6 +44,7 @@ public class BlobstoreClient {
 				targetFile = File.createTempFile("bs-test-object", ".jpg", null);
 				Files.write(data, targetFile);
 			} catch (IOException e) {
+				log.log(Level.WARNING, "Temp file could not be written", e);
 				throw new RuntimeException(e);
 			}
 			
@@ -54,9 +59,8 @@ public class BlobstoreClient {
 			CloseableHttpResponse response = httpclient.execute(httpGet);
 			System.out.println(httpGet.getRequestLine());
 			try {
-				System.out
-						.println("---------------CREATEURL-CALL-------------------");
-				System.out.println(response.getStatusLine());
+				log.info("---------------CREATEURL-CALL-------------------");
+				log.info(response.getStatusLine().toString());
 				if (response.getStatusLine().getStatusCode() != 200) {
 					return result;
 				}
@@ -73,12 +77,11 @@ public class BlobstoreClient {
 			HttpEntity reqEntity = builder.build();
 
 			httppost.setEntity(reqEntity);
-			System.out
-					.println("executing request " + httppost.getRequestLine());
+			log.info("executing request " + httppost.getRequestLine());
 			response = httpclient.execute(httppost);
 			try {
-				System.out.println("---------UPLOAD-----------------");
-				System.out.println(response.getStatusLine());
+				log.info("---------UPLOAD-----------------");
+				log.info(response.getStatusLine().toString());
 				if (response.getStatusLine().getStatusCode() != 200) {
 					return result;
 				}
@@ -86,15 +89,17 @@ public class BlobstoreClient {
 				if (resEntity != null) {
 					result = SerializationUtils.deserialize(EntityUtils
 							.toByteArray(resEntity));
-					System.out.println("Returning:  " + result);
+					log.info("Returning:  " + result);
 				}
 				EntityUtils.consume(resEntity);
 			} finally {
 				response.close();
 			}
 		} catch (ClientProtocolException e) {
+			log.log(Level.WARNING, "Network exception", e);
 			throw new RuntimeException(e);
 		} catch (IOException e) {
+			log.log(Level.WARNING, "IO exception", e);
 			throw new RuntimeException(e);
 		} finally {
 			try {
