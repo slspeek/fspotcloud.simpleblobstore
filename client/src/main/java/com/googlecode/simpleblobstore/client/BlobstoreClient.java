@@ -44,7 +44,6 @@ public class BlobstoreClient {
 				targetFile = File.createTempFile("bs-object", "", null);
 				Files.write(data, targetFile);
 			} catch (IOException e) {
-				log.log(Level.WARNING, "Temp file could not be written", e);
 				throw new BlobstoreClientException("Temp file could not be written", e);
 			}
 			
@@ -57,10 +56,7 @@ public class BlobstoreClient {
 		try {
 			HttpGet httpGet = new HttpGet(urlBase + "defaultcreateurl" + "?success=%2Fdefaultupload");
 			CloseableHttpResponse response = httpclient.execute(httpGet);
-			System.out.println(httpGet.getRequestLine());
 			try {
-				log.info("---------------CREATEURL-CALL-------------------");
-				log.info(response.getStatusLine().toString());
 				if (response.getStatusLine().getStatusCode() != 200) {
 					throw new BlobstoreClientException("createurl call failed: " + response.getStatusLine(), null);
 				}
@@ -77,11 +73,8 @@ public class BlobstoreClient {
 			HttpEntity reqEntity = builder.build();
 
 			httppost.setEntity(reqEntity);
-			log.info("executing request " + httppost.getRequestLine());
 			response = httpclient.execute(httppost);
 			try {
-				log.info("---------UPLOAD-----------------");
-				log.info(response.getStatusLine().toString());
 				if (response.getStatusLine().getStatusCode() != 200) {
 					throw new BlobstoreClientException("upload call failed: " + response.getStatusLine(), null);
 				}
@@ -89,17 +82,14 @@ public class BlobstoreClient {
 				if (resEntity != null) {
 					result = SerializationUtils.deserialize(EntityUtils
 							.toByteArray(resEntity));
-					log.info("Returning:  " + result);
 				}
 				EntityUtils.consume(resEntity);
 			} finally {
 				response.close();
 			}
 		} catch (ClientProtocolException e) {
-			log.log(Level.WARNING, "Network exception", e);
 			throw new BlobstoreClientException("General network exception", e);
 		} catch (IOException e) {
-			log.log(Level.WARNING, "IO exception", e);
 			throw new BlobstoreClientException("General IO exception", e);
 		} finally {
 			try {
