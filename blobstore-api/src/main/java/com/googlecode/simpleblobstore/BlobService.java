@@ -14,6 +14,8 @@ public interface BlobService {
     void delete(BlobKey key);
 
     BlobInfo getInfo(BlobKey key);
+    
+    byte[] fetchData(BlobKey key);
         
     void serve(BlobKey blobKey,
             HttpServletResponse response) throws java.io.IOException;

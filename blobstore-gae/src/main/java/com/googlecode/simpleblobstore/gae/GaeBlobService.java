@@ -1,5 +1,6 @@
 package com.googlecode.simpleblobstore.gae;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,34 @@ public class GaeBlobService implements BlobService {
 	BlobstoreService gaeBlobService;
 	@Inject
 	BlobInfoFactory infoFactory;
-	
+
+	@Override
+	public byte[] fetchData(BlobKey key) {
+		BlobInfo info = getInfo(key);
+		if (info != null) {
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			long length = info.getLength();
+			long offset = 0;
+			long remainingLength = length;
+			while (remainingLength > 0) {
+				long numberOfBytesWeWillRead = Math.min(remainingLength,
+						MILLION);
+				byte[] result = gaeBlobService.fetchData(getGaeBlobKey(key),
+						offset, offset + numberOfBytesWeWillRead - 1);
+				try {
+					outputStream.write(result);
+				} catch (IOException e) {
+					throw new RuntimeException(e); 
+				}
+				remainingLength -= numberOfBytesWeWillRead;
+				offset += numberOfBytesWeWillRead;
+			}
+			return outputStream.toByteArray();
+		} else {
+			return null;
+		}
+	}
+
 	@Override
 	public void delete(BlobKey blobKey) {
 		com.google.appengine.api.blobstore.BlobKey appengineKey = getGaeBlobKey(blobKey);
