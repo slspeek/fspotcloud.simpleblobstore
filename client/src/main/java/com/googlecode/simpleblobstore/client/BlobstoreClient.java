@@ -33,7 +33,7 @@ public class BlobstoreClient {
 		this.urlBase = urlBase;
 	}
 
-	public Map<String, List<BlobKey>> upload(Map<String, byte[]> dataMap) {
+	public Map<String, List<BlobKey>> upload(Map<String, byte[]> dataMap) throws BlobstoreClientException {
 		Map<String, List<BlobKey>> result = null;
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 		for (Map.Entry<String, byte[]> entry : dataMap.entrySet()) {
@@ -41,11 +41,11 @@ public class BlobstoreClient {
 			byte[] data = entry.getValue();
 			File targetFile;
 			try {
-				targetFile = File.createTempFile("bs-test-object", ".jpg", null);
+				targetFile = File.createTempFile("bs-object", "", null);
 				Files.write(data, targetFile);
 			} catch (IOException e) {
 				log.log(Level.WARNING, "Temp file could not be written", e);
-				throw new RuntimeException(e);
+				throw new BlobstoreClientException("Temp file could not be written", e);
 			}
 			
 			//ByteArrayBody bin = new ByteArrayBody(data, "");
@@ -62,7 +62,7 @@ public class BlobstoreClient {
 				log.info("---------------CREATEURL-CALL-------------------");
 				log.info(response.getStatusLine().toString());
 				if (response.getStatusLine().getStatusCode() != 200) {
-					return result;
+					throw new BlobstoreClientException("createurl call failed: " + response.getStatusLine(), null);
 				}
 				HttpEntity resEntity = response.getEntity();
 				if (resEntity != null) {
@@ -83,7 +83,7 @@ public class BlobstoreClient {
 				log.info("---------UPLOAD-----------------");
 				log.info(response.getStatusLine().toString());
 				if (response.getStatusLine().getStatusCode() != 200) {
-					return result;
+					throw new BlobstoreClientException("upload call failed: " + response.getStatusLine(), null);
 				}
 				HttpEntity resEntity = response.getEntity();
 				if (resEntity != null) {
@@ -97,15 +97,15 @@ public class BlobstoreClient {
 			}
 		} catch (ClientProtocolException e) {
 			log.log(Level.WARNING, "Network exception", e);
-			throw new RuntimeException(e);
+			throw new BlobstoreClientException("General network exception", e);
 		} catch (IOException e) {
 			log.log(Level.WARNING, "IO exception", e);
-			throw new RuntimeException(e);
+			throw new BlobstoreClientException("General IO exception", e);
 		} finally {
 			try {
 				httpclient.close();
 			} catch (IOException e) {
-				throw new RuntimeException(e);
+				throw new BlobstoreClientException("Failed to close httpclient", e);
 			}
 		}
 		return result;

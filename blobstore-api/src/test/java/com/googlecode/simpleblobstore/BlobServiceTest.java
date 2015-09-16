@@ -39,6 +39,7 @@ import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.googlecode.simpleblobstore.client.BlobstoreClient;
+import com.googlecode.simpleblobstore.client.BlobstoreClientException;
 
 @RunWith(Parameterized.class)
 public class BlobServiceTest {
@@ -112,7 +113,7 @@ public class BlobServiceTest {
 		return result;
 	}
 
-	private BlobKey simpleSaveInBlobstore(byte[] data) throws IOException {
+	private BlobKey simpleSaveInBlobstore(byte[] data) throws BlobstoreClientException {
 		BlobstoreClient client = new BlobstoreClient(URLBASE);
 		Map<String, byte[]> dataMap = Maps.newHashMap();
 		dataMap.put("data", data);
