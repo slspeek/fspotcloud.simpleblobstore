@@ -1,14 +1,12 @@
 package com.googlecode.simpleblobstore.j2ee;
 
-import com.google.inject.servlet.ServletModule;
+import com.google.inject.AbstractModule;
 import com.googlecode.simpleblobstore.BlobService;
 
-public class J2eeSimpleBlobstoreModule extends ServletModule {
+public class J2eeSimpleBlobstoreModule extends AbstractModule {
 
 	@Override
-	protected void configureServlets() {
-		super.configureServlets();
-		serve("/_ah/upload").with(BlobUploadServlet.class);
+	protected void configure() {
 		bind(BlobDao.class).to(BlobDaoImpl.class);
 		bind(BlobService.class).to(J2eeBlobService.class);
 		bind(String.class).annotatedWith(ServerAddress.class).toProvider(ServerAddressProvider.class);

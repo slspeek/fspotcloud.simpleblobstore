@@ -30,13 +30,15 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import com.googlecode.simpleblobstore.DefaultAfterUploadServlet;
 import com.googlecode.simpleblobstore.j2ee.J2eeSimpleBlobstoreModule;
+import com.googlecode.simpleblobstore.j2ee.J2eeSimpleBlobstoreServletModule;
 import com.googlecode.simplejpadao.EntityModule;
 
 public class J2eeGuiceServletConfig extends GuiceServletContextListener {
 	@Override
 	protected Injector getInjector() {
 		Injector i = Guice.createInjector(new J2eeSimpleBlobstoreModule(),
-				new EntityModule("derby"), new TestAppModule(), new TestServletModule());
+				new J2eeSimpleBlobstoreServletModule(), new EntityModule(
+						"derby"), new TestAppModule(), new TestServletModule());
 		return i;
 	}
 

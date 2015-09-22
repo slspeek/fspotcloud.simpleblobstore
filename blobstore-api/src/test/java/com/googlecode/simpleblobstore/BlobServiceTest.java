@@ -29,7 +29,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +39,7 @@ import com.google.common.io.Files;
 import com.google.guiceberry.junit4.GuiceBerryRule;
 import com.googlecode.simpleblobstore.client.BlobstoreClient;
 import com.googlecode.simpleblobstore.client.BlobstoreClientException;
+import com.googlecode.simpleblobstore.client.BlobstoreClientImpl;
 
 @RunWith(Parameterized.class)
 public class BlobServiceTest {
@@ -114,7 +114,7 @@ public class BlobServiceTest {
 	}
 
 	private BlobKey simpleSaveInBlobstore(byte[] data) throws BlobstoreClientException {
-		BlobstoreClient client = new BlobstoreClient(URLBASE);
+		BlobstoreClient client = new BlobstoreClientImpl(URLBASE);
 		Map<String, byte[]> dataMap = Maps.newHashMap();
 		dataMap.put("data", data);
 		Map<String, List<BlobKey>> r = client.upload(dataMap);
